@@ -232,6 +232,7 @@ function getQuestionData(category, value) {
 
 
             update(ref(db, `/Dinamica/`),{'activequestion': true} );
+            update(ref(db, `/Dinamica/`),{'equipo': ""} );
 
             
               
@@ -248,6 +249,7 @@ function showAnswer() {
     update(ref(db, `/Dinamica/`),{'equipo': ''} );
     document.getElementById("answer-text").style.visibility = "visible";
 }
+
 window.closeQuestionsPane = closeQuestionsPane;
 function closeQuestionsPane() {
 
@@ -267,6 +269,11 @@ function closeQuestionsPane() {
     document.getElementById('question-pane').style.visibility = "hidden";
 
     
+}
+
+window.setEquipoNull = setEquipoNull
+function setEquipoNull(){
+            update(ref(db, `/Dinamica/`),{'Equipo': ''} );
 }
 
 window.resetGame = resetGame;

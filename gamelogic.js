@@ -95,7 +95,7 @@ function loadCategories() {
 }
 
 loadPlayerStats();
-            localStorage.setItem("currentPoints", 0);
+localStorage.setItem("currentPoints", 0);
 
 window.updatePlayerScore = updatePlayerScore;
 function updatePlayerScore(playerId) {
@@ -115,10 +115,12 @@ function updatePlayerScore(playerId) {
 }
 
 function loadPlayerStats(playerActive) {
-    document.getElementById('player-stats').innerHTML = "";
+
     get(ref(db, '/Equipos')).then(data => {
 
+    document.getElementById('player-stats').innerHTML = "";
         data.forEach(equipo => {
+            
             document.getElementById('player-stats').innerHTML += `
                 <div style="color: white; font-size: 20px; margin-bottom: 10px; flex-direction: row; display: flex; gap: 10px; align-items: center; background-color: ${playerActive == equipo.key ? 'yellow' : 'gray'}; padding: 10px; border-radius: 10px;">
                     <button onclick="updatePlayerScore('${equipo.key}')">+</button>    

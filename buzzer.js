@@ -20,10 +20,10 @@ document.getElementById('buzzer').addEventListener('click',()=>{
 
 
 onValue(ref(db, '/Equipos'), (snapshot) => {
-
     snapshot.forEach(teamnum => {
-        if(teamnum == team){
-            document.getElementById('points').value = teamnum.val().points
+        console.log(snapshot.val())
+        if(Number(teamnum.key) == Number(team)){
+            document.getElementById('points').innerHTML = teamnum.val().Puntos
         }
     });
     

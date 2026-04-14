@@ -16,6 +16,19 @@
 
 body {
     height: 100dvh;
+    touch-action: manipulation;
+}
+
+html {
+    touch-action: manipulation;
+}
+
+div {
+    touch-action: manipulation;
+}
+
+button {
+    touch-action: manipulation;
 }
 
 h1,

@@ -252,6 +252,8 @@ function closeQuestionsPane() {
     update(ref(db, `/Dinamica/`),{'activequestion': false} );
     update(ref(db, `/Dinamica/`),{'equipo': ''} );
 
+    loadPlayerStats()
+
     localStorage.setItem("currentPoints", 0);
     document.getElementById('question-text').innerText = "";
     document.getElementById('answer-text').innerText = "";

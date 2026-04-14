@@ -273,7 +273,8 @@ function closeQuestionsPane() {
 
 window.setEquipoNull = setEquipoNull
 function setEquipoNull(){
-            update(ref(db, `/Dinamica/`),{'Equipo': ''} );
+            update(ref(db, `/Dinamica/`),{'equipo': ''} );
+            loadPlayerStats()
 }
 
 window.resetGame = resetGame;

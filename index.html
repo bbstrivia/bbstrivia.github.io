@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="main.css">
+
+    <script type="module" src="dbconfig.js"></script>
+    <script type="module" src="gamelogic.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBS Trivia Night</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Helvetica&display=swap');
+
+        body {
+            font-family: 'Helvetica', sans-serif;
+            background-color: var(--primary-base);
+            color: var(--primary-black);
+        }
+    </style>
+</head>
+
+<body style="background: #833AB4;
+background: linear-gradient(40deg, rgba(131, 58, 180, 1) 0%, rgb(23, 7, 73) 30%, rgb(0, 0, 0) 100%); padding: 20px;">
+    <div style="display: flex; flex-direction: row; gap: 20px; align-content: center; align-items: center;">
+
+        <h1>BBS Trivia Night</h1>
+        <div style="flex: 1;"></div>
+        <button onclick="randomSelectCategory()" style="height: 50px;">Random Category</button>
+        <button onclick="resetGame()" style="height: 50px;">Reset Game</button>
+    </div>
+
+
+    <div style="display: flex; flex-direction: row; gap: 20px;">
+        <div style="flex: 4">
+            <div id="question-pane"
+                style="height: 0px; visibility: hidden; background: white; margin: 0px; border-radius: 20px; padding: 0px; display: flex; flex-direction: row; gap: 20px;">
+                <div style="display: flex; flex: 5; flex-direction: column;">
+                    <div id="question-title-text" style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">
+                    </div>
+                    <div id="question-text" style="font-size: 36px; margin-bottom: 20px;"></div>
+                    <div id="answer-text" style="font-size: 36px;"></div>
+                </div>
+
+                <div
+                    style="display: flex; flex: 1; width: 100%; flex-direction: column; justify-content: right; gap: 10px;">
+                    <button id="answer-button" style="display: flex; flex-direction: column; gap: 10px;"
+                        onclick="closeQuestionsPane()">
+                        Close</button>
+                    <button id="answer-button" style="display: flex; flex-direction: column; gap: 10px;"
+                        onclick="showAnswer()">
+                        Respuesta</button>
+
+
+                </div>
+
+            </div>
+
+            <div id="cards-container">
+                <div id="category-column-1" class="cat-col">
+                    <div id="category-title-1" class="category-title">
+
+                    </div>
+                    <div id="questions-column-1" class="cat-col">
+
+                    </div>
+                </div>
+
+                <div id="category-column-2" class="cat-col">
+                    <div id="category-title-2" class="category-title">
+
+                    </div>
+                    <div id="questions-column-2" class="cat-col">
+
+                    </div>
+                </div>
+
+                <div id="category-column-3" class="cat-col">
+                    <div id="category-title-3" class="category-title">
+
+                    </div>
+                    <div id="questions-column-3" class="cat-col">
+
+                    </div>
+                </div>
+
+                <div id="category-column-4" class="cat-col">
+                    <div id="category-title-4" class="category-title">
+
+                    </div>
+                    <div id="questions-column-4" class="cat-col">
+
+                    </div>
+                </div>
+
+                <div id="category-column-5" class="cat-col">
+                    <div id="category-title-5" class="category-title">
+
+                    </div>
+                    <div id="questions-column-5" class="cat-col">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div id="player-stats"
+            style="flex: 1; border: 1px solid white; background-color: black; border-radius: 20px; padding: 20px; height: fit-content;">
+
+        </div>
+    </div>
+
+
+</body>
+
+</html>

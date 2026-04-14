@@ -1,4 +1,4 @@
-import {set, get, update, remove, ref, child, getDatabase }
+import {set, get, update, remove, ref, child, getDatabase, onValue}
 from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
 
 window.getQuestionData = getQuestionData;
@@ -8,6 +8,14 @@ localStorage.setItem("editingMode", false);
 
 loadCategories();
 loadQuestions();
+
+onValue(ref(db, '/Dinamica'), (snapshot) => {
+    if (snapshot.val().equipo) {
+        console.log(snapshot.val().equipo);
+        loadPlayerStats(snapshot.val().equipo)
+
+    }
+});
 
 window.toggleEditMode = toggleEditMode;
 function toggleEditMode() {
@@ -45,14 +53,18 @@ function randomSelectCategory() {
 
             categories.forEach(cat => {
                 const el = document.getElementById('category-title-' + cat);
-                if (el) el.style.border = "none";
+                if (el) el.style.background = "rgb(114, 0, 175)";el.style.color = "rgb(255, 255, 255)";
+                
             });
 
             // 🎯 Pick random category
             const randomCategory = categories[Math.floor(Math.random() * categories.length)];
 
             const el = document.getElementById('category-title-' + randomCategory);
-            if (el) el.style.border = "2px solid yellow";
+            if (el){
+                    el.style.background = "rgb(255,0,200)";el.style.color = "black";
+                   
+            } 
 
             finalCategory = randomCategory;
             count++;
@@ -102,13 +114,13 @@ function updatePlayerScore(playerId) {
     })
 }
 
-function loadPlayerStats() {
+function loadPlayerStats(playerActive) {
     document.getElementById('player-stats').innerHTML = "";
     get(ref(db, '/Equipos')).then(data => {
 
         data.forEach(equipo => {
             document.getElementById('player-stats').innerHTML += `
-                <div style="color: white; font-size: 20px; margin-bottom: 10px; flex-direction: row; display: flex; gap: 10px; align-items: center; background-color: rgb(205, 205, 205); padding: 10px; border-radius: 10px;">
+                <div style="color: white; font-size: 20px; margin-bottom: 10px; flex-direction: row; display: flex; gap: 10px; align-items: center; background-color: ${playerActive == equipo.key ? 'yellow' : 'gray'}; padding: 10px; border-radius: 10px;">
                     <button onclick="updatePlayerScore('${equipo.key}')">+</button>    
                     <div style="display: flex; flex-direction: column; color: black;">    
                         <div style="font-weight: bold;">${equipo.val().Nombre}</div>
@@ -216,6 +228,9 @@ function getQuestionData(category, value) {
                 Available: false
             });
 
+
+            update(ref(db, `/Dinamica/`),{'activequestion': true} );
+
             
               
         }
@@ -227,12 +242,17 @@ function getQuestionData(category, value) {
 
 window.showAnswer = showAnswer;
 function showAnswer() {
+
+    update(ref(db, `/Dinamica/`),{'equipo': ''} );
     document.getElementById("answer-text").style.visibility = "visible";
 }
 window.closeQuestionsPane = closeQuestionsPane;
 function closeQuestionsPane() {
 
-            localStorage.setItem("currentPoints", 0);
+    update(ref(db, `/Dinamica/`),{'activequestion': false} );
+    update(ref(db, `/Dinamica/`),{'equipo': ''} );
+
+    localStorage.setItem("currentPoints", 0);
     document.getElementById('question-text').innerText = "";
     document.getElementById('answer-text').innerText = "";
     document.getElementById('question-image').innerHTML = "";
@@ -257,6 +277,8 @@ function resetGame() {
 
             category.forEach(question => {
                 if(question.key != "catname") {
+
+                    update(ref(db, `/Dinamica/`),{'equipo': ''} );
                     update(ref(db, `/Categorias/${category.key}/${question.key}`), {
                         Available: true
                     });

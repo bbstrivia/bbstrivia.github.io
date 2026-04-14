@@ -4,9 +4,20 @@ from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
 window.getQuestionData = getQuestionData;
 
 let cardCont = document.getElementById("card-container");
+localStorage.setItem("editingMode", false);
 
 loadCategories();
 loadQuestions();
+
+window.toggleEditMode = toggleEditMode;
+function toggleEditMode() {
+    const isChecked = document.getElementById("edit-toggle").checked;
+    localStorage.setItem("editingMode", isChecked);
+    if(isChecked) {
+        console.log("Editing mode enabled. Click on questions to edit them.");
+    }
+    loadQuestions();
+}
 
 window.randomSelectCategory = randomSelectCategory;
 let rouletteInterval = null;
@@ -76,6 +87,9 @@ loadPlayerStats();
 
 window.updatePlayerScore = updatePlayerScore;
 function updatePlayerScore(playerId) {
+    if(Number(localStorage.getItem('currentPoints'))==0){
+        return
+    }
     get(ref(db, `/Equipos/${playerId}`)).then(data => {
         if (data.exists()) {
             let currentScore = data.val().Puntos;
@@ -107,6 +121,7 @@ function loadPlayerStats() {
     })
 }
 
+
 function loadQuestions() { 
     get(ref(db, '/Categorias')).then(data => {
         
@@ -121,15 +136,39 @@ function loadQuestions() {
                     `
                 }
             })
-        });
+            // After loading questions, check if we're in editing mode and if so, add hover effects
+            if(localStorage.getItem("editingMode") == "true") {
+                document.getElementById('questions-column-'+category.key).innerHTML += `<div id="cat-${category.key}-add" class="question-title-add" onclick="addNewQuestion('${category.key}')">
+                        + New Question
+                    </div>
+                    `
+            };
+        })
+            
 
-    })
+            
+        })
 }
 
 function getQuestionData(category, value) {
   
-   
+   if(localStorage.getItem("editingMode") == "true") {
+       let newQuestionText = prompt("Edit question text (leave blank to keep current):", "");
+        let newAnswerText = prompt("Edit answer text (leave blank to keep current):", "");
 
+        let newImageSrc = prompt("Edit reference image");
+            
+        let updates = {};
+        if(newQuestionText) updates['Q'] = newQuestionText;
+        if(newAnswerText) updates['A'] = newAnswerText;
+        if(newAnswerText) updates['ImageUrl'] = newImageSrc;
+
+        update(ref(db, `/Categorias/${category}/${value}`), updates);
+        loadQuestions();
+            
+        
+    }
+   else{
 
     get(ref(db, `/Categorias/${category}/${value}`)).then(data => {
         if (data.exists()) {
@@ -142,6 +181,7 @@ function getQuestionData(category, value) {
             document.getElementById(`cat-${category}-${value}`).style.backgroundColor = "gray"; 
             document.getElementById('question-text').innerText = "";
             document.getElementById('answer-text').innerText = "";
+            document.getElementById('question-image').innerHtml = "";
             document.getElementById('question-pane').transition= "2";
             document.getElementById("question-pane").style.padding = "20px";
             document.getElementById('question-pane').style.visibility = "visible";
@@ -149,6 +189,17 @@ function getQuestionData(category, value) {
 
             document.getElementById('question-pane').style.marginBottom = "200px";
             let questionData = data.val().Q;
+            
+            if(data.val().ImageUrl != "" && data.val().ImageUrl != undefined){
+                let questionImg = `<img src="${data.val().ImageUrl}" alt="" height="300">`;
+                document.getElementById("question-image").innerHTML = questionImg;
+            }
+            else{
+                let questionImg = ``;
+
+                document.getElementById("question-image").innerHTML = "";
+            }
+            
             let answer = data.val().A;
 
             localStorage.setItem("currentPoints", value);
@@ -170,6 +221,8 @@ function getQuestionData(category, value) {
         }
         
     })
+
+    }
 }
 
 window.showAnswer = showAnswer;
@@ -182,6 +235,7 @@ function closeQuestionsPane() {
             localStorage.setItem("currentPoints", 0);
     document.getElementById('question-text').innerText = "";
     document.getElementById('answer-text').innerText = "";
+    document.getElementById('question-image').innerHTML = "";
     document.getElementById('question-pane').transition= "2";
     document.getElementById('question-pane').style.padding = "0px";
     document.getElementById('question-pane').style.height = "0px";
@@ -225,5 +279,24 @@ function resetGame() {
     
               
            
+
+}
+window.addNewQuestion = addNewQuestion;
+
+function addNewQuestion(category){
+    let newQuestionText = prompt("Question text", "");
+    let newAnswerText = prompt("Answer text", "");
+    let newImage = prompt("Image url for reference (optional)")
+    let value = prompt("Points value:")
+
+    let updates = {};
+        if(newQuestionText) updates['Q'] = newQuestionText;
+        if(newAnswerText) updates['A'] = newAnswerText;
+        if(newQuestionText) updates['Available'] = true;
+        if(newImage) updates['ImageUrl'] = newImage;
+
+        update(ref(db, `/Categorias/${category}/${value}`), updates);
+        loadQuestions();
+            
 
 }

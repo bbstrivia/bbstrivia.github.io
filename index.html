@@ -30,7 +30,10 @@ background: linear-gradient(40deg, rgba(131, 58, 180, 1) 0%, rgb(23, 7, 73) 30%,
         <div style="flex: 1;"></div>
         <button onclick="randomSelectCategory()" style="height: 50px;">Random Category</button>
         <button onclick="resetGame()" style="height: 50px;">Reset Game</button>
+        <input type="checkbox" name="edit" id="edit-toggle" onchange="toggleEditMode()">
+        <label for="edit-toggle" style="color: white;">Edit Mode</label>
     </div>
+
 
 
     <div style="display: flex; flex-direction: row; gap: 20px;">
@@ -38,9 +41,11 @@ background: linear-gradient(40deg, rgba(131, 58, 180, 1) 0%, rgb(23, 7, 73) 30%,
             <div id="question-pane"
                 style="height: 0px; visibility: hidden; background: white; margin: 0px; border-radius: 20px; padding: 0px; display: flex; flex-direction: row; gap: 20px;">
                 <div style="display: flex; flex: 5; flex-direction: column;">
-                    <div id="question-title-text" style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">
+                    <div id="question-title-text" style="font-size: 24px; font-weight: bold; margin-bottom: 50px;">
                     </div>
-                    <div id="question-text" style="font-size: 36px; margin-bottom: 20px;"></div>
+                    <div id="question-text" style="font-size: 36px; font-weight: bold; margin-bottom: 10px;"></div>
+
+                    <div id="question-image" style="font-size: 36px; font-weight: bold; margin-bottom: 10px;"></div>
                     <div id="answer-text" style="font-size: 36px;"></div>
                 </div>
 
@@ -51,7 +56,7 @@ background: linear-gradient(40deg, rgba(131, 58, 180, 1) 0%, rgb(23, 7, 73) 30%,
                         Close</button>
                     <button id="answer-button" style="display: flex; flex-direction: column; gap: 10px;"
                         onclick="showAnswer()">
-                        Respuesta</button>
+                        Answer</button>
 
 
                 </div>

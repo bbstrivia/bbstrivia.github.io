@@ -81,6 +81,20 @@ button {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.question-title-add {
+    border: 1px dashed var(--primary-base-light);
+    background-color: rgba(0, 0, 0, 0.2, green, blue);
+    color: var(--primary-base);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px var(--shadow);
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
 .question-title:hover {
     transform: scale(1.05);
     background: yellow;

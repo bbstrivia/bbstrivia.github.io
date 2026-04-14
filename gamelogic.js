@@ -10,7 +10,7 @@ localStorage.setItem("editingMode", false);
 loadCategories();
 loadQuestions();
 
-update(ref(db, `/Dinamica/`),{'activequestion': true} );
+update(ref(db, `/Dinamica/`),{'activequestion': false} );
 update(ref(db, `/Dinamica/`),{'equipo': ""} );
 
 onValue(ref(db, '/Dinamica'), (snapshot) => {

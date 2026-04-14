@@ -122,11 +122,11 @@ function loadPlayerStats(playerActive) {
         data.forEach(equipo => {
             
             document.getElementById('player-stats').innerHTML += `
-                <div style="color: white; font-size: 20px; margin-bottom: 10px; flex-direction: row; display: flex; gap: 10px; align-items: center; background-color: ${playerActive == equipo.key ? 'yellow' : 'gray'}; padding: 10px; border-radius: 10px;">
+                <div style="color: ${playerActive == equipo.key ? 'white' : 'black'}; font-size: 20px; margin-bottom: 10px; flex-direction: row; display: flex; gap: 10px; align-items: center; background-color: ${playerActive == equipo.key ? 'rgb(255, 0, 208)' : 'white'}; padding: 10px; border-radius: 10px;">
                     <button onclick="updatePlayerScore('${equipo.key}')">+</button>    
                     <div style="display: flex; flex-direction: column; color: black;">    
-                        <div style="font-weight: bold;">${equipo.val().Nombre}</div>
-                        <div>Score: ${equipo.val().Puntos}</div>
+                        <div style="font-weight: bold; color: ${playerActive == equipo.key ? 'white' : 'black'}; ">${equipo.val().Nombre}</div>
+                        <div style="color: ${playerActive == equipo.key ? 'white' : 'black'};">Score: ${equipo.val().Puntos}</div>
                     </div>
                 </div>
             `

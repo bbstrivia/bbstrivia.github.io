@@ -18,6 +18,15 @@ document.getElementById('buzzer').addEventListener('click',()=>{
     
 })
 
+get(ref(db, '/Equipos')).then(snapshot => {
+    snapshot.forEach(teamnum => {
+        console.log(snapshot.val())
+        if(Number(teamnum.key) == Number(team)){
+            document.getElementById('points').innerHTML = teamnum.val().Puntos
+            document.getElementById('team-name').innerHTML = teamnum.val().Nombre
+        }
+    });
+})
 
 onValue(ref(db, '/Equipos'), (snapshot) => {
     snapshot.forEach(teamnum => {

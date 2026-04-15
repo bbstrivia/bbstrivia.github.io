@@ -3,6 +3,13 @@ from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
 
 window.getQuestionData = getQuestionData;
 
+window.showAnswer = showAnswer;
+function showAnswer() {
+    update(ref(db, `/Dinamica/`),{'showAnswer': true} );
+    update(ref(db, `/Dinamica/`),{'equipo': ''} );
+    document.getElementById("answer-text").style.visibility = "visible";
+}
+
 let cardCont = document.getElementById("card-container");
 localStorage.setItem("editingMode", false);
 
@@ -32,11 +39,7 @@ onValue(ref(db, '/Dinamica/closeQuestion'),(closeQuestion) =>{
     }
 })
 
-onValue(ref(db, '/Dinamica/showAnswer'),(showAnswer) =>{
-    if(showAnswer.val() == true){
-        showAnswer()
-    }
-})
+
 
 onValue(ref(db, '/Dinamica'), (snapshot) => {
     if (snapshot.val().equipo) {
@@ -294,13 +297,7 @@ function getQuestionData(category, value) {
     }
 }
 
-window.showAnswer = showAnswer;
-function showAnswer() {
 
-    update(ref(db, `/Dinamica/`),{'showAnswer': true} );
-    update(ref(db, `/Dinamica/`),{'equipo': ''} );
-    document.getElementById("answer-text").style.visibility = "visible";
-}
 
 window.closeQuestionsPane = closeQuestionsPane;
 function closeQuestionsPane() {
@@ -344,7 +341,7 @@ function resetGame() {
             category.forEach(question => {
                 if(question.key != "catname") {
 
-                    update(ref(db, `/Dinamica/`),{'equipo': '','active-question':''} );
+                    update(ref(db, `/Dinamica/`),{'equipo': '','active-question':'','showAnswer':false,'closeQuestion':''} );
                     
                     update(ref(db, `/Categorias/${category.key}/${question.key}`), {
                         Available: true
@@ -390,3 +387,9 @@ function addNewQuestion(category){
             
 
 }
+
+onValue(ref(db, '/Dinamica/showAnswer'),(showAnswer) =>{
+    if(showAnswer.val() == true){
+        document.getElementById('answer-text').style.visibility = 'visible'
+    }
+})

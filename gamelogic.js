@@ -322,10 +322,11 @@ function resetGame() {
 window.addNewQuestion = addNewQuestion;
 
 function addNewQuestion(category){
+    let value = prompt("Points value:")
     let newQuestionText = prompt("Question text", "");
     let newAnswerText = prompt("Answer text", "");
     let newImage = prompt("Image url for reference (optional)")
-    let value = prompt("Points value:")
+    
 
     let updates = {};
         if(newQuestionText) updates['Q'] = newQuestionText;

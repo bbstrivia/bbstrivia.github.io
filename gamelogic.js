@@ -13,8 +13,11 @@ console.log(presenter)
 loadCategories();
 loadQuestions();
 
+onValue(ref(db, '/Equipos'), (snapshot) => {
+   loadPlayerStats()
+});
+
 onValue(ref(db, '/Dinamica/active-question/'), (snapshot) => {
-    
     console.log("Question activated",snapshot.val())
     getQuestionData(snapshot.val().split('-')[0],snapshot.val().split('-')[1])
 });
@@ -328,7 +331,8 @@ function resetGame() {
             category.forEach(question => {
                 if(question.key != "catname") {
 
-                    update(ref(db, `/Dinamica/`),{'equipo': ''} );
+                    update(ref(db, `/Dinamica/`),{'equipo': '','active-question':''} );
+                    
                     update(ref(db, `/Categorias/${category.key}/${question.key}`), {
                         Available: true
                     });

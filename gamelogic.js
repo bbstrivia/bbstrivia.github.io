@@ -6,9 +6,18 @@ window.getQuestionData = getQuestionData;
 let cardCont = document.getElementById("card-container");
 localStorage.setItem("editingMode", false);
 
+const url = new URL(location);
+window.presenter = url.searchParams.get("presenter");
+console.log(presenter)
 
 loadCategories();
 loadQuestions();
+
+onValue(ref(db, '/Dinamica/active-question/'), (snapshot) => {
+    
+    console.log("Question activated",snapshot.val())
+    getQuestionData(snapshot.val().split('-')[0],snapshot.val().split('-')[1])
+});
 
 update(ref(db, `/Dinamica/`),{'activequestion': false} );
 update(ref(db, `/Dinamica/`),{'equipo': ""} );
@@ -17,8 +26,21 @@ onValue(ref(db, '/Dinamica'), (snapshot) => {
     if (snapshot.val().equipo) {
         console.log(snapshot.val().equipo);
         loadPlayerStats(snapshot.val().equipo)
-
     }
+
+    if(url.searchParams.get("presenter")=='true'){  
+            const el = document.getElementById('category-title-' + snapshot.val().randomCat);
+            if (el){
+                    let categories = ['1','2','3','4','5','6']
+                    categories.forEach(cat => {
+                    const el = document.getElementById('category-title-' + cat);
+                        if (el) el.style.background = "rgb(114, 0, 175)";el.style.color = "rgb(255, 255, 255)";
+                        
+                    });
+                    el.style.background = "rgb(255,0,200)";el.style.color = "black";
+                   
+            }     }
+    
 });
 
 window.toggleEditMode = toggleEditMode;
@@ -79,6 +101,12 @@ function randomSelectCategory() {
                 rouletteInterval = null;
 
                 console.log("Final category:", finalCategory);
+                console.log(data.val()[finalCategory].catname)
+
+                update(ref(db, `/Dinamica/`), {
+                    randomCat: finalCategory
+                });
+                
             }
 
         }, 200); // speed (lower = faster)
@@ -182,19 +210,20 @@ function getQuestionData(category, value) {
         if(newAnswerText) updates['ImageUrl'] = newImageSrc;
 
         update(ref(db, `/Categorias/${category}/${value}`), updates);
+
         loadQuestions();
-            
-        
     }
    else{
 
     get(ref(db, `/Categorias/${category}/${value}`)).then(data => {
         if (data.exists()) {
 
-            if(data.val().Available == false) {
+            if(data.val().Available == false && url.searchParams.get("presenter") != 'true') {
                 console.log("Question already answered");
                 return
             }
+
+            update(ref(db, `/Dinamica/`), {'active-question':`${category}-${value}`});
 
             document.getElementById(`cat-${category}-${value}`).style.backgroundColor = "gray"; 
             document.getElementById('question-text').innerText = "";
@@ -229,15 +258,20 @@ function getQuestionData(category, value) {
             document.getElementById("answer-text").style.visibility = "hidden";
             document.getElementById("answer-text").innerText = answer;
 
-            // Mark question as unavailable
-            update(ref(db, `/Categorias/${category}/${value}`), {
-                Available: false
-            });
+           
+
+            if(url.searchParams.get("presenter")=='true'){  
+                document.getElementById("answer-text").style.visibility = "visible";
+            }
 
 
             update(ref(db, `/Dinamica/`),{'activequestion': true} );
             update(ref(db, `/Dinamica/`),{'equipo': ""} );
 
+             // Mark question as unavailable
+            update(ref(db, `/Categorias/${category}/${value}`), {
+                Available: false
+            });
             
               
         }

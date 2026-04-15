@@ -57,6 +57,7 @@ h1 {
     flex-direction: row;
     gap: 10px;
     margin-top: 20px;
+    flex: 1;
 }
 
 .cat-col {
@@ -95,7 +96,8 @@ button {
 .question-title {
     background-color: var(--primary-base-light);
     color: var(--primary-black);
-    padding: 20px;
+    padding: 30px;
+    padding-inline: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 6px var(--shadow);
     text-align: center;

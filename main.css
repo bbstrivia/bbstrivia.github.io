@@ -79,6 +79,7 @@ button {
 }
 
 .category-title {
+
     background-color: rgb(114, 0, 175);
     color: var(--primary-base);
     padding: 10px;

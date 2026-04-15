@@ -26,19 +26,25 @@ onValue(ref(db, '/Dinamica/active-question/'), (snapshot) => {
 update(ref(db, `/Dinamica/`),{'activequestion': false} );
 update(ref(db, `/Dinamica/`),{'equipo': ""} );
 
+onValue(ref(db, '/Dinamica/closeQuestion'),(closeQuestion) =>{
+    if(closeQuestion.val() == true){
+        closeQuestionsPane()
+    }
+})
+
+onValue(ref(db, '/Dinamica/showAnswer'),(showAnswer) =>{
+    if(showAnswer.val() == true){
+        showAnswer()
+    }
+})
+
 onValue(ref(db, '/Dinamica'), (snapshot) => {
     if (snapshot.val().equipo) {
         console.log(snapshot.val().equipo);
         loadPlayerStats(snapshot.val().equipo)
     }
 
-    if(snapshot.val().closeQuestion == true){
-        closeQuestionsPane()
-    }
-
-    if(snapshot.val().showAnswer == true){
-        showAnswer()
-    }
+    
 
     if(url.searchParams.get("presenter")=='true'){  
             const el = document.getElementById('category-title-' + snapshot.val().randomCat);

@@ -20,6 +20,7 @@ onValue(ref(db, '/Equipos'), (snapshot) => {
 onValue(ref(db, '/Dinamica/active-question/'), (snapshot) => {
     console.log("Question activated",snapshot.val())
     getQuestionData(snapshot.val().split('-')[0],snapshot.val().split('-')[1])
+
 });
 
 update(ref(db, `/Dinamica/`),{'activequestion': false} );
@@ -29,6 +30,14 @@ onValue(ref(db, '/Dinamica'), (snapshot) => {
     if (snapshot.val().equipo) {
         console.log(snapshot.val().equipo);
         loadPlayerStats(snapshot.val().equipo)
+    }
+
+    if(snapshot.val().closeQuestion == true){
+        closeQuestionsPane()
+    }
+
+    if(snapshot.val().showAnswer == true){
+        showAnswer()
     }
 
     if(url.searchParams.get("presenter")=='true'){  
@@ -159,9 +168,9 @@ function loadPlayerStats(playerActive) {
             document.getElementById('player-stats').innerHTML += `
                 <div style="color: ${playerActive == equipo.key ? 'white' : 'black'}; font-size: 20px; margin-bottom: 10px; flex-direction: row; display: flex; gap: 10px; align-items: center; background-color: ${playerActive == equipo.key ? 'rgb(255, 0, 208)' : 'white'}; padding: 10px; border-radius: 10px;">
                     <button onclick="updatePlayerScore('${equipo.key}')">+</button>    
-                    <div style="display: flex; flex-direction: column; color: black;">    
-                        <div style="font-weight: bold; color: ${playerActive == equipo.key ? 'white' : 'black'}; ">${equipo.val().Nombre}</div>
-                        <div style="color: ${playerActive == equipo.key ? 'white' : 'black'};">Score: ${equipo.val().Puntos}</div>
+                    <div style="display: flex; flex-direction: row; color: black; gap: 10px;">    
+                        <div style="font-weight: bold; color: ${playerActive == equipo.key ? 'white' : 'black'}; ">${equipo.val().Nombre}: </div>
+                        <div style="font-size: 24px; color: ${playerActive == equipo.key ? 'white' : 'black'};">${equipo.val().Puntos}</div>
                     </div>
                 </div>
             `
@@ -217,16 +226,11 @@ function getQuestionData(category, value) {
         loadQuestions();
     }
    else{
+    update(ref(db, `/Dinamica/`), {'active-question':`${category}-${value}`});
+    update(ref(db, `/Dinamica/`),{'closeQuestion': false} );
 
     get(ref(db, `/Categorias/${category}/${value}`)).then(data => {
         if (data.exists()) {
-
-            if(data.val().Available == false && url.searchParams.get("presenter") != 'true') {
-                console.log("Question already answered");
-                return
-            }
-
-            update(ref(db, `/Dinamica/`), {'active-question':`${category}-${value}`});
 
             document.getElementById(`cat-${category}-${value}`).style.backgroundColor = "gray"; 
             document.getElementById('question-text').innerText = "";
@@ -287,6 +291,7 @@ function getQuestionData(category, value) {
 window.showAnswer = showAnswer;
 function showAnswer() {
 
+    update(ref(db, `/Dinamica/`),{'showAnswer': true} );
     update(ref(db, `/Dinamica/`),{'equipo': ''} );
     document.getElementById("answer-text").style.visibility = "visible";
 }
@@ -295,6 +300,8 @@ window.closeQuestionsPane = closeQuestionsPane;
 function closeQuestionsPane() {
 
     update(ref(db, `/Dinamica/`),{'activequestion': false} );
+    update(ref(db, `/Dinamica/`),{'closeQuestion': true} );
+    update(ref(db, `/Dinamica/`),{'showAnswer': false} );
     update(ref(db, `/Dinamica/`),{'equipo': ''} );
 
     loadPlayerStats()

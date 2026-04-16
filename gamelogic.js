@@ -1,13 +1,8 @@
+/*
 import {set, get, update, remove, ref, child, getDatabase, onValue}
 from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
-localStorage.setItem('access',false)
 
-let pass = prompt('Contraseña');
-get(ref(db, '/Dinamica')).then(data => {
-    if(pass == data.val().pass){
-        localStorage.setItem('access',true)
-    }
-})
+localStorage.setItem('access',true)
 
 
 window.getQuestionData = getQuestionData;
@@ -209,9 +204,9 @@ function loadPlayerStats(playerActive) {
 
 function loadQuestions() { 
 
-        if(localStorage.getItem('access') == false){
+    if(localStorage.getItem('access') == false){
             return
-        }
+    }
 
     get(ref(db, '/Categorias')).then(data => {
         

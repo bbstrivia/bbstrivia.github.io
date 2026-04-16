@@ -5,6 +5,7 @@ window.getQuestionData = getQuestionData;
 
 window.showAnswer = showAnswer;
 function showAnswer() {
+    timer(0)
     update(ref(db, `/Dinamica/`),{'showAnswer': true} );
     update(ref(db, `/Dinamica/`),{'equipo': ''} );
     document.getElementById("answer-text").style.visibility = "visible";
@@ -22,6 +23,7 @@ loadQuestions();
 
 onValue(ref(db, '/Equipos'), (snapshot) => {
    loadPlayerStats()
+
 });
 
 onValue(ref(db, '/Dinamica/active-question/'), (snapshot) => {
@@ -36,9 +38,18 @@ update(ref(db, `/Dinamica/`),{'equipo': ""} );
 onValue(ref(db, '/Dinamica/closeQuestion'),(closeQuestion) =>{
     if(closeQuestion.val() == true){
         closeQuestionsPane()
+        timer(0)
     }
 })
 
+
+onValue(ref(db, '/Dinamica/equipo'), (snapshot) => {
+    if(snapshot.val()!='')
+        timer(5)
+    else{
+        timer(0)
+    }
+})
 
 
 onValue(ref(db, '/Dinamica'), (snapshot) => {
@@ -46,8 +57,6 @@ onValue(ref(db, '/Dinamica'), (snapshot) => {
         console.log(snapshot.val().equipo);
         loadPlayerStats(snapshot.val().equipo)
     }
-
-    
 
     if(url.searchParams.get("presenter")=='true'){  
             const el = document.getElementById('category-title-' + snapshot.val().randomCat);
@@ -274,7 +283,7 @@ function getQuestionData(category, value) {
             document.getElementById("answer-text").style.visibility = "hidden";
             document.getElementById("answer-text").innerText = answer;
 
-           
+            timer(20)
 
             if(url.searchParams.get("presenter")=='true'){  
                 document.getElementById("answer-text").style.visibility = "visible";
@@ -326,6 +335,7 @@ window.setEquipoNull = setEquipoNull
 function setEquipoNull(){
             update(ref(db, `/Dinamica/`),{'equipo': ''} );
             loadPlayerStats()
+            timer(20)
 }
 
 window.resetGame = resetGame;
@@ -391,5 +401,52 @@ function addNewQuestion(category){
 onValue(ref(db, '/Dinamica/showAnswer'),(showAnswer) =>{
     if(showAnswer.val() == true){
         document.getElementById('answer-text').style.visibility = 'visible'
+        timer(0)
     }
 })
+
+
+let timerInterval = null;
+
+function timer(seconds) {
+    // Clear previous timer
+    if (timerInterval !== null) {
+        clearInterval(timerInterval);
+    }
+
+    const duration = seconds * 1000; // convert to ms
+    const startTime = Date.now();
+
+    timerInterval = setInterval(function () {
+        const elapsed = Date.now() - startTime;
+        const remaining = duration - elapsed;
+
+        if (remaining <= 0) {
+            document.getElementById('safeTimerDisplay').style.color = 'white';
+            update(ref(db, `/Dinamica/`),{'equipo': ''} );
+            clearInterval(timerInterval);
+            timerInterval = null;
+            document.getElementById('safeTimerDisplay').innerHTML = "00:00:000";
+           loadPlayerStats()
+
+            return;
+        }
+
+        const mins = Math.floor(remaining / 60000);
+        const secs = Math.floor((remaining % 60000) / 1000);
+        const ms = remaining % 1000;
+
+        if(Number(secs) <= 5 ){
+            document.getElementById('safeTimerDisplay').style.color = 'red';
+        } 
+        else{
+            document.getElementById('safeTimerDisplay').style.color = 'white';
+        }
+
+        document.getElementById('safeTimerDisplay').innerHTML =
+            String(mins).padStart(2, '0') + ':' +
+            String(secs).padStart(2, '0') + ':' +
+            String(ms).padStart(3, '0');
+
+    }, 50); // update every 50ms (smooth enough, not too heavy)
+}

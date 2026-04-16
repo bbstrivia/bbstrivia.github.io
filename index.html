@@ -28,6 +28,7 @@ background: linear-gradient(40deg, rgba(131, 58, 180, 1) 0%, rgb(23, 7, 73) 30%,
 
         <h1>BBS Trivia Night</h1>
         <div style="flex: 1;"></div>
+
         <button onclick="randomSelectCategory()" style="height: 50px;">Random Category</button>
         <button onclick="resetGame()" style="height: 50px;">Reset Game</button>
         <input type="checkbox" name="edit" id="edit-toggle" onchange="toggleEditMode()">
@@ -124,10 +125,16 @@ background: linear-gradient(40deg, rgba(131, 58, 180, 1) 0%, rgb(23, 7, 73) 30%,
 
             </div>
         </div>
-        <div id="player-stats"
-            style="flex: 1; border: 1px solid white; background-color: black; border-radius: 20px; padding: 20px; height: fit-content;">
+        <div>
+            <div style="flex: 1; color: white; font-size: 50px; margin-top: 20px; margin-bottom: 20px;"
+                id="safeTimerDisplay"></div>
 
+            <div id="player-stats"
+                style="flex: 1; border: 1px solid white; background-color: black; border-radius: 20px; padding: 20px; height: fit-content;">
+
+            </div>
         </div>
+
     </div>
 
 

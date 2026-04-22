@@ -57,6 +57,14 @@ onValue(ref(db, '/Equipos'), (snapshot) => {
 
 });
 
+onValue(ref(db, '/Dinamica/randomCat'), (snapshot) => {
+
+    if(snapshot.val() == true){
+        randomSelectCategory()
+        console.log('running rand')
+    }
+
+});
 
 onValue(ref(db, '/Dinamica/steal'), (snapshot) => {
 
@@ -129,6 +137,10 @@ window.randomSelectCategory = randomSelectCategory;
 let rouletteInterval = null;
 
 function randomSelectCategory() {
+    update(ref(db, `/Dinamica/`), {
+                    randomCat: true
+    });
+
     if (rouletteInterval) {
         clearInterval(rouletteInterval);
         rouletteInterval = null;
@@ -177,7 +189,7 @@ function randomSelectCategory() {
                 console.log(data.val()[finalCategory].catname)
 
                 update(ref(db, `/Dinamica/`), {
-                    randomCat: finalCategory
+                    randomCat: ''
                 });
                 
             }

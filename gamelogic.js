@@ -57,6 +57,14 @@ onValue(ref(db, '/Equipos'), (snapshot) => {
 
 });
 
+
+onValue(ref(db, '/Dinamica/steal'), (snapshot) => {
+
+    if(snapshot.val() == true)
+        setEquipoNull()
+
+});
+
 onValue(ref(db, '/Dinamica/active-question/'), (snapshot) => {
     console.log("Question activated",snapshot.val())
     getQuestionData(snapshot.val().split('-')[0],snapshot.val().split('-')[1])
@@ -358,6 +366,7 @@ function closeQuestionsPane() {
     update(ref(db, `/Dinamica/`),{'closeQuestion': true} );
     update(ref(db, `/Dinamica/`),{'showAnswer': false} );
     update(ref(db, `/Dinamica/`),{'equipo': ''} );
+    update(ref(db, `/Dinamica/`),{'steal': false} );
 
     loadPlayerStats()
 
@@ -376,7 +385,7 @@ function closeQuestionsPane() {
 
 window.setEquipoNull = setEquipoNull
 function setEquipoNull(){
-            update(ref(db, `/Dinamica/`),{'equipo': ''} );
+            update(ref(db, `/Dinamica/`),{'equipo': '','steal':true} );
             loadPlayerStats()
             timer(20)
             playTimer()

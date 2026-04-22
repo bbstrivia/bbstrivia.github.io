@@ -379,6 +379,7 @@ function setEquipoNull(){
             update(ref(db, `/Dinamica/`),{'equipo': ''} );
             loadPlayerStats()
             timer(20)
+            playTimer()
 
 }
 

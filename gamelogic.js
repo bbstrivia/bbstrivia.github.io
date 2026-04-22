@@ -60,7 +60,7 @@ onValue(ref(db, '/Equipos'), (snapshot) => {
 onValue(ref(db, '/Dinamica/randomCat'), (snapshot) => {
 
     if(snapshot.val() == true){
-        randomSelectCategory()
+        randomSelectCategory2()
         console.log('running rand')
     }
 
@@ -137,10 +137,18 @@ window.randomSelectCategory = randomSelectCategory;
 let rouletteInterval = null;
 
 function randomSelectCategory() {
+    console.log('updating random cat')
     update(ref(db, `/Dinamica/`), {
                     randomCat: true
-    });
+                }).then(()=>{
+                    console.log('updated')
+                });
+}
 
+window.randomSelectCategory2 = randomSelectCategory2;
+
+function randomSelectCategory2() {
+    
     if (rouletteInterval) {
         clearInterval(rouletteInterval);
         rouletteInterval = null;

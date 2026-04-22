@@ -4,12 +4,39 @@ from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
 
 localStorage.setItem('access',true)
 
+const sound = new Audio('beep1.m4a');
+const tick20 = new Audio('tick20.wav');
+
+let myAudio = null;
+
+function playTimer() {
+    // Stop previous audio if needed
+    if (myAudio) {
+        myAudio.pause();
+        myAudio.currentTime = 0;
+    }
+
+    myAudio = new Audio("tick20.wav");
+    myAudio.play();
+    console.log('playing')
+}
+
+function stopTimerSound() {
+    if (myAudio) {
+        myAudio.pause();
+        console.log("stopping")
+        myAudio.currentTime = 0;
+    }
+}
+
+const buzzer = new Audio('ding.mp3');
+const wrong = new Audio('wrong-answer-buzzer.mp3')
 
 window.getQuestionData = getQuestionData;
 
 window.showAnswer = showAnswer;
 function showAnswer() {
-    timer(0)
+    timer(0,false)
     update(ref(db, `/Dinamica/`),{'showAnswer': true} );
     update(ref(db, `/Dinamica/`),{'equipo': ''} );
     document.getElementById("answer-text").style.visibility = "visible";
@@ -42,16 +69,18 @@ update(ref(db, `/Dinamica/`),{'equipo': ""} );
 onValue(ref(db, '/Dinamica/closeQuestion'),(closeQuestion) =>{
     if(closeQuestion.val() == true){
         closeQuestionsPane()
-        timer(0)
+        timer(0,false)
     }
 })
 
 
 onValue(ref(db, '/Dinamica/equipo'), (snapshot) => {
-    if(snapshot.val()!='')
+    if(snapshot.val()!=''){
         timer(5)
+        buzzer.play()
+    }
     else{
-        timer(0)
+        timer(0,false)
     }
 })
 
@@ -72,6 +101,7 @@ onValue(ref(db, '/Dinamica'), (snapshot) => {
                         
                     });
                     el.style.background = "rgb(255,0,200)";el.style.color = "black";
+                    sound.play()
                    
             }     }
     
@@ -106,7 +136,7 @@ function randomSelectCategory() {
         if (categories.length === 0) return;
 
         let count = 0;
-        const maxSpins = 10; // you can tweak this
+        const maxSpins = 5; // you can tweak this
         let finalCategory = null;
 
         rouletteInterval = setInterval(() => {
@@ -123,7 +153,8 @@ function randomSelectCategory() {
             const el = document.getElementById('category-title-' + randomCategory);
             if (el){
                     el.style.background = "rgb(255,0,200)";el.style.color = "black";
-                   
+                    sound.play();
+
             } 
 
             finalCategory = randomCategory;
@@ -143,7 +174,7 @@ function randomSelectCategory() {
                 
             }
 
-        }, 200); // speed (lower = faster)
+        }, 500); // speed (lower = faster)
     });
 }
 
@@ -181,16 +212,18 @@ function updatePlayerScore(playerId) {
 }
 
 function loadPlayerStats(playerActive) {
-
+    
     get(ref(db, '/Equipos')).then(data => {
 
     document.getElementById('player-stats').innerHTML = "";
         data.forEach(equipo => {
+
             
+
             document.getElementById('player-stats').innerHTML += `
-                <div style="color: ${playerActive == equipo.key ? 'white' : 'black'}; font-size: 20px; margin-bottom: 10px; flex-direction: row; display: flex; gap: 10px; align-items: center; background-color: ${playerActive == equipo.key ? 'rgb(255, 0, 208)' : 'white'}; padding: 10px; border-radius: 10px;">
+                <div style="color: ${playerActive == equipo.key ? 'white' : 'black'}; font-size: 20px; margin-bottom: 10px; flex-direction: row; display: flex; gap: 10px; align-items: center; width: 100px; background-color: ${playerActive == equipo.key ? 'rgb(255, 0, 208)' : 'white'}; padding: 10px; border-radius: 10px; min-width: 150px;">
                     <button onclick="updatePlayerScore('${equipo.key}')">+</button>    
-                    <div style="display: flex; flex-direction: row; color: black; gap: 10px;">    
+                    <div style="display: flex; flex-direction: row; color: black; gap: 10px; ">    
                         <div style="font-weight: bold; color: ${playerActive == equipo.key ? 'white' : 'black'}; ">${equipo.val().Nombre}: </div>
                         <div style="font-size: 24px; color: ${playerActive == equipo.key ? 'white' : 'black'};">${equipo.val().Puntos}</div>
                     </div>
@@ -293,6 +326,7 @@ function getQuestionData(category, value) {
             document.getElementById("answer-text").innerText = answer;
 
             timer(20)
+            playTimer()
 
             if(url.searchParams.get("presenter")=='true'){  
                 document.getElementById("answer-text").style.visibility = "visible";
@@ -345,6 +379,7 @@ function setEquipoNull(){
             update(ref(db, `/Dinamica/`),{'equipo': ''} );
             loadPlayerStats()
             timer(20)
+
 }
 
 window.resetGame = resetGame;
@@ -410,14 +445,14 @@ function addNewQuestion(category){
 onValue(ref(db, '/Dinamica/showAnswer'),(showAnswer) =>{
     if(showAnswer.val() == true){
         document.getElementById('answer-text').style.visibility = 'visible'
-        timer(0)
+        timer(0,false)
     }
 })
 
 
 let timerInterval = null;
 
-function timer(seconds) {
+function timer(seconds,buzz = true) {
     // Clear previous timer
     if (timerInterval !== null) {
         clearInterval(timerInterval);
@@ -430,13 +465,18 @@ function timer(seconds) {
         const elapsed = Date.now() - startTime;
         const remaining = duration - elapsed;
 
+        if(remaining > 0 && remaining < 100){
+            
+        }
         if (remaining <= 0) {
+            stopTimerSound()
+            if(buzz){wrong.play()}
             document.getElementById('safeTimerDisplay').style.color = 'white';
             update(ref(db, `/Dinamica/`),{'equipo': ''} );
             clearInterval(timerInterval);
             timerInterval = null;
             document.getElementById('safeTimerDisplay').innerHTML = "00:00:000";
-           loadPlayerStats()
+            loadPlayerStats()
 
             return;
         }

@@ -353,7 +353,7 @@ function getQuestionData(category, value) {
             document.getElementById("answer-text").style.visibility = "hidden";
             document.getElementById("answer-text").innerText = answer;
 
-            timer(20)
+            timer(30)
             playTimer()
 
             if(url.searchParams.get("presenter")=='true'){  
@@ -407,7 +407,7 @@ window.setEquipoNull = setEquipoNull
 function setEquipoNull(){
             update(ref(db, `/Dinamica/`),{'equipo': '','steal':true} );
             loadPlayerStats()
-            timer(20)
+            timer(30)
             playTimer()
 
 }
